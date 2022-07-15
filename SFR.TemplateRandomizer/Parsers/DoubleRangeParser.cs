@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Drafts.Parsers
+﻿namespace SFR.TemplateRandomizer.Parsers
 {
     internal class DoubleRangeParser : IArgumentParser<(double start, double end)>
     {

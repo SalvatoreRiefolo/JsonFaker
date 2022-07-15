@@ -1,17 +1,17 @@
-﻿using Drafts.Constants;
-using Drafts.Directives;
-using Drafts.Parsers;
-using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json.Linq;
+using SFR.TemplateRandomizer.Constants;
+using SFR.TemplateRandomizer.Parsers;
+using SFR.TemplateRandomizer.TypeGenerator;
 using System.Text.RegularExpressions;
 
-namespace Drafts
+namespace SFR.TemplateRandomizer
 {
     public partial class TemplateRandomizer
     {
         private readonly Random random = new(Environment.TickCount);
         private readonly IArgumentParser<(int, int)> rangeParser = new IntegerRangeParser();
 
-        private readonly IDictionary<string, IDirective> directives = new Dictionary<string, IDirective>();            
+        private readonly IDictionary<string, ITypeGenerator> directives = new Dictionary<string, ITypeGenerator>();
         private readonly JObject template;
 
         public TemplateRandomizer(JObject template)
@@ -20,8 +20,9 @@ namespace Drafts
         }
 
         public JObject Randomize()
-            => RandomizeProperties(RepeatProperties(this.template));
+            => RandomizeProperties(RepeatProperties(template));
 
+        // try to iterate on each property 2 times to perform repeat && replace
         public JObject RepeatProperties(JObject jobject)
         {
             var result = new JObject();
@@ -51,9 +52,9 @@ namespace Drafts
                             if (itemValue.Contains(Tokens.Repeat))
                             {
                                 var tokens = Regex.Split(itemValue, Patterns.Repeat);
-                                var (Low, High) = this.rangeParser.Parse(tokens[1]);
+                                var (Low, High) = rangeParser.Parse(tokens[1]);
 
-                                for (int i = 0; i < this.random.Next(Low, High); i++)
+                                for (int i = 0; i < random.Next(Low, High); i++)
                                 {
                                     arr.Add($"{tokens.First().Trim()}");
                                 }
@@ -75,11 +76,16 @@ namespace Drafts
                 if (current.Name.Contains(Tokens.Repeat))
                 {
                     var tokens = Regex.Split(current.Name, Patterns.Repeat);
-                    var (low, high) = this.rangeParser.Parse(tokens[1]);
+                    var (low, high) = rangeParser.Parse(tokens[1]);
 
-                    for (int i = 0; i < this.random.Next(low, high); i++)
+                    for (int i = 0; i < random.Next(low, high); i++)
                     {
-                        result.Add($"{tokens.First()}c_{i}", current.Value);
+                        var retryCount = 5;
+                        while (!result.TryAdd(SwapToken(tokens[0].Trim()).ToString(), current.Value) && retryCount > 0)                        
+                            retryCount--;
+                        
+                        if (retryCount == 0)
+                            result.Add($"{SwapToken(tokens[0].Trim())}_{i}", current.Value);                    
                     }
                 }
                 else
@@ -89,8 +95,8 @@ namespace Drafts
             }
 
             return result;
-        }       
-        
+        }
+
         public JObject RandomizeProperties(JObject jobject)
         {
             var result = new JObject();
@@ -124,81 +130,40 @@ namespace Drafts
 
             return result;
         }
-       
-        //private JToken SwapToken(JToken token)
-        //{
-        //    var tokenValue = token.ToString();
-        //    var tokens = tokenValue.Split(' ');           
-
-        //    var (low, high) = tokens.Length != 1 ? ParseRange(tokenValue, tokens[1]) : (0, 100);
-
-        //    if (tokens[0].StartsWith('&')) return "TBD";
-
-        //    return tokens[0] switch
-        //    {
-        //        Tokens.Integer => Integer(low, high),
-        //        Tokens.String => NextRandomString(low, high),
-        //        _ => token
-        //    };
-        //}
-
-        //public (int low, int high) ParseRange(string token, string args)
-        //{
-        //    return this.cache.GetOrCreate(token, () =>
-        //    {
-        //        var match = this.rangeRegex.Match(args);
-
-        //        var start = int.Parse(match.Groups["start"].Value);
-        //        var end = match.Groups["end"].Value == string.Empty ? start : int.Parse(match.Groups["end"].Value) + 1;
-
-        //        return (start, end);
-        //    });
-        //}       
 
         private JToken SwapToken(JToken token)
         {
-            if (!token.ToString().StartsWith('$')) 
+            var tokenValue = token.ToString();
+            if (tokenValue.StartsWith('&'))
+                return RandomizeProperties(RepeatProperties(template.GetValue(tokenValue) as JObject));
+
+            if (!tokenValue.StartsWith('$'))
                 return token;
 
-            IDirective directive = this.directives.GetOrCreate(token.ToString(), () => CreateDirective(token));
+            ITypeGenerator directive = directives.GetOrCreate(token.ToString(), () => CreateDirective(token.ToString()));
             return new JValue(directive.Execute());
         }
 
-        private IDirective CreateDirective(JToken token)
+        private ITypeGenerator CreateDirective(string token)
         {
-            var tokens = token.ToString().Split(' ');
+            var tokens = token.Split(' ');
 
             var args = tokens.Length > 1 ? tokens[1] : null;
 
             return tokens[0] switch
             {
-                Tokens.Integer => new IntegerDirective(this.random, args),
-                Tokens.String => new StringDirective(this.random, args),
+                Tokens.Integer => new IntegerGenerator(random, args),
+                Tokens.String => new StringGenerator(random, args),
                 _ => throw new NotImplementedException($"Directive '{tokens[0]}' not implemented")
             };
         }
-
-        //private int Integer(int min = int.MinValue, int max = int.MaxValue) => this.random.Next(min, max);
-
-        //private string NextRandomString(int minLen, int maxLen)
-        //{
-        //    var count = random.Next(minLen, maxLen);
-        //    var res = new char[count];
-
-        //    for (int i = 0; i < count; i++)
-        //    {
-        //        res[i] = AllowedChars[random.Next(0, AllowedChars.Length)];
-        //    }
-
-        //    return new string(res);
-        //}
     }
 
     public static class Extensions
     {
         public static T GetOrCreate<T>(this IDictionary<string, T> cache, string key, Func<T> generator)
         {
-            if (cache.TryGetValue(key, out T value)) 
+            if (cache.TryGetValue(key, out T value))
                 return value;
 
             T result = generator();

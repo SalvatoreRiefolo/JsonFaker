@@ -1,7 +1,7 @@
 ﻿using BenchmarkDotNet.Attributes;
 using Newtonsoft.Json.Linq;
 
-namespace Drafts
+namespace SFR.TemplateRandomizer
 {
     [MemoryDiagnoser]
     public class Benchmark
@@ -12,8 +12,8 @@ namespace Drafts
         public Benchmark()
         {
             var template = File.ReadAllText(Path.Combine(Directory.GetCurrentDirectory(), "template.json"));
-            this.jobj = JObject.Parse(template);
-            this.gen = new TemplateRandomizer(jobj);
+            jobj = JObject.Parse(template);
+            gen = new TemplateRandomizer(jobj);
         }
 
         [Benchmark(Baseline = true)]
@@ -21,7 +21,7 @@ namespace Drafts
         {
             return gen.Randomize();
         }
-        
+
         [Benchmark]
         public JObject ReplaceRepeatOnly()
         {

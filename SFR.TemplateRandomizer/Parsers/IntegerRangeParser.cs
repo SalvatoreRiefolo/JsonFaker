@@ -1,6 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 
-namespace Drafts.Parsers
+namespace SFR.TemplateRandomizer.Parsers
 {
     internal class IntegerRangeParser : IArgumentParser<(int start, int end)>
     {
@@ -10,21 +10,22 @@ namespace Drafts.Parsers
 
         public IntegerRangeParser()
         {
-            this.defaultMin = int.MinValue;
-            this.defaultMax = int.MaxValue;
+            defaultMin = int.MinValue;
+            defaultMax = int.MaxValue;
         }
 
-        public IntegerRangeParser((int defaultMin, int defaultMax) defaults)
+        public IntegerRangeParser(int defaultMin, int defaultMax)
         {
-            (this.defaultMin, this.defaultMax) = defaults;
+            this.defaultMin = defaultMin;
+            this.defaultMax = defaultMax;
         }
 
         public (int start, int end) Parse(string input)
         {
             if (input is null)
-                return (this.defaultMin, this.defaultMax);
+                return (defaultMin, defaultMax);
 
-            var match = this.rangeRegex.Match(input);
+            var match = rangeRegex.Match(input);
 
             var start = int.Parse(match.Groups["start"].Value);
             var end = match.Groups["end"].Value == string.Empty ? start : int.Parse(match.Groups["end"].Value) + 1;

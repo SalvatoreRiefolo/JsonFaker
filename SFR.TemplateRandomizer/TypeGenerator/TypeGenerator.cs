@@ -1,10 +1,10 @@
-﻿namespace Drafts.Directives
+﻿namespace SFR.TemplateRandomizer.TypeGenerator
 {
-    public abstract class Directive : IDirective
+    public abstract class TypeGenerator : ITypeGenerator
     {
         protected readonly Random random;
 
-        protected Directive(Random random)
+        protected TypeGenerator(Random random)
         {
             this.random = random;
         }

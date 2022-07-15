@@ -1,29 +1,30 @@
 {
   "main": {
-    "name": "$int",
-    "surname": "$string",
-    "list": [
+    "id": "$int 2000..3000",
+    "name": "$string 10",
+    "surname": "$string 20",
+    "numbers": [
       "$int 0..100 $repeat 5"
     ],
     "bucket": {
-      "asd": 456,
+      "code": 456,
       "innerList": [
         123,
         {
           "a": 1,
-          "b": 2
+          "b": "$int 1000..1000000"
         }
       ],
       "innerBucket": {
-        "$int $repeat 1..4": [
-          "&personSection $repeat 1..4"
+        "$int 100..1000 $repeat 1..2": [
+          "&person $repeat 1..2"
         ]
       }
     }
   },
 
-  "personSection": {
+  "&person": {
     "first": 1,
-    "name": "$string"
+    "name": "$string 10"
   }
 }

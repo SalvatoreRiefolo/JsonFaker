@@ -1,4 +1,4 @@
-﻿namespace Drafts.Constants
+﻿namespace SFR.TemplateRandomizer.Constants
 {
     public static class Tokens
     {
