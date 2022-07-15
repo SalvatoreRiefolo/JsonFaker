@@ -1,5 +1,6 @@
 ﻿using Drafts.Constants;
 using Drafts.Directives;
+using Drafts.Parsers;
 using Newtonsoft.Json.Linq;
 using System.Text.RegularExpressions;
 
@@ -7,12 +8,10 @@ namespace Drafts
 {
     public partial class TemplateRandomizer
     {
-        private readonly Random random = new Random(Environment.TickCount);
-        private const string AllowedChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+        private readonly Random random = new(Environment.TickCount);
+        private readonly IArgumentParser<(int, int)> rangeParser = new IntegerRangeParser();
 
-        private readonly IDictionary<string, (int, int)> cache = new Dictionary<string, (int, int)>();            
         private readonly IDictionary<string, IDirective> directives = new Dictionary<string, IDirective>();            
-        private readonly Regex rangeRegex = new(@"(?<start>\d+)(.{2})?(?<end>\d*)", RegexOptions.Compiled);
         private readonly JObject template;
 
         public TemplateRandomizer(JObject template)
@@ -52,9 +51,9 @@ namespace Drafts
                             if (itemValue.Contains(Tokens.Repeat))
                             {
                                 var tokens = Regex.Split(itemValue, Patterns.Repeat);
-                                var (Low, High) = ParseRange(itemValue, tokens[1]);
+                                var (Low, High) = this.rangeParser.Parse(tokens[1]);
 
-                                for (int i = 0; i < this.Integer(Low, High); i++)
+                                for (int i = 0; i < this.random.Next(Low, High); i++)
                                 {
                                     arr.Add($"{tokens.First().Trim()}");
                                 }
@@ -76,9 +75,9 @@ namespace Drafts
                 if (current.Name.Contains(Tokens.Repeat))
                 {
                     var tokens = Regex.Split(current.Name, Patterns.Repeat);
-                    var (low, high) = ParseRange(current.Name, tokens[1]);
+                    var (low, high) = this.rangeParser.Parse(tokens[1]);
 
-                    for (int i = 0; i < this.Integer(low, high); i++)
+                    for (int i = 0; i < this.random.Next(low, high); i++)
                     {
                         result.Add($"{tokens.First()}c_{i}", current.Value);
                     }
@@ -126,74 +125,73 @@ namespace Drafts
             return result;
         }
        
+        //private JToken SwapToken(JToken token)
+        //{
+        //    var tokenValue = token.ToString();
+        //    var tokens = tokenValue.Split(' ');           
+
+        //    var (low, high) = tokens.Length != 1 ? ParseRange(tokenValue, tokens[1]) : (0, 100);
+
+        //    if (tokens[0].StartsWith('&')) return "TBD";
+
+        //    return tokens[0] switch
+        //    {
+        //        Tokens.Integer => Integer(low, high),
+        //        Tokens.String => NextRandomString(low, high),
+        //        _ => token
+        //    };
+        //}
+
+        //public (int low, int high) ParseRange(string token, string args)
+        //{
+        //    return this.cache.GetOrCreate(token, () =>
+        //    {
+        //        var match = this.rangeRegex.Match(args);
+
+        //        var start = int.Parse(match.Groups["start"].Value);
+        //        var end = match.Groups["end"].Value == string.Empty ? start : int.Parse(match.Groups["end"].Value) + 1;
+
+        //        return (start, end);
+        //    });
+        //}       
+
         private JToken SwapToken(JToken token)
         {
-            var tokenValue = token.ToString();
-            var tokens = tokenValue.Split(' ');           
+            if (!token.ToString().StartsWith('$')) 
+                return token;
 
-            var (low, high) = tokens.Length != 1 ? ParseRange(tokenValue, tokens[1]) : (0, 100);
-
-            if (tokens[0].StartsWith('&')) return "TBD";
-
-            return tokens[0] switch
-            {
-                Tokens.Integer => Integer(low, high),
-                Tokens.String => NextRandomString(low, high),
-                _ => token
-            };
-        }
-
-        public (int low, int high) ParseRange(string token, string args)
-        {
-            return this.cache.GetOrCreate(token, () =>
-            {
-                var match = this.rangeRegex.Match(args);
-
-                var start = int.Parse(match.Groups["start"].Value);
-                var end = match.Groups["end"].Value == string.Empty ? start : int.Parse(match.Groups["end"].Value) + 1;
-
-                return (start, end);
-            });
-        }       
-
-
-        // to be removed:
-        // SwapToken
-        // ParseRange
-        // Integer
-        // NextRandomString
-        private JToken SwapTokenWithDirective(JToken token)
-        {
             IDirective directive = this.directives.GetOrCreate(token.ToString(), () => CreateDirective(token));
             return new JValue(directive.Execute());
         }
 
-        public IDirective CreateDirective(JToken token)
+        private IDirective CreateDirective(JToken token)
         {
             var tokens = token.ToString().Split(' ');
 
+            var args = tokens.Length > 1 ? tokens[1] : null;
+
             return tokens[0] switch
             {
-                Tokens.Integer => new IntegerDirective(this.random, tokens[1]),
-                Tokens.String => new StringDirective(this.random, tokens[1]),
+                Tokens.Integer => new IntegerDirective(this.random, args),
+                Tokens.String => new StringDirective(this.random, args),
                 _ => throw new NotImplementedException($"Directive '{tokens[0]}' not implemented")
             };
         }
 
-        private int Integer(int min = int.MinValue, int max = int.MaxValue) => this.random.Next(min, max);
+        //private int Integer(int min = int.MinValue, int max = int.MaxValue) => this.random.Next(min, max);
 
-        private string NextRandomString(int minLen, int maxLen)
-        {
-            var count = random.Next(minLen, maxLen);
-            var res = new char[count];
+        //private string NextRandomString(int minLen, int maxLen)
+        //{
+        //    var count = random.Next(minLen, maxLen);
+        //    var res = new char[count];
 
-            for (int i = 0; i < count; i++)
-            {
-                res[i] = AllowedChars[random.Next(0, AllowedChars.Length)];
-            }
+        //    for (int i = 0; i < count; i++)
+        //    {
+        //        res[i] = AllowedChars[random.Next(0, AllowedChars.Length)];
+        //    }
 
-            return new string(res);
-        }
+        //    return new string(res);
+        //}
     }
 
     public static class Extensions

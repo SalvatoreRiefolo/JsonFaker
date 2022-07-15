@@ -11,7 +11,7 @@ namespace Drafts
 
         public Benchmark()
         {
-            var template = File.ReadAllText("C:\\Users\\sassa\\source\\repos\\Drafts\\Drafts\\template.json");
+            var template = File.ReadAllText(Path.Combine(Directory.GetCurrentDirectory(), "template.json"));
             this.jobj = JObject.Parse(template);
             this.gen = new TemplateRandomizer(jobj);
         }

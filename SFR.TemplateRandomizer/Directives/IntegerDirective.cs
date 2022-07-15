@@ -7,15 +7,14 @@ namespace Drafts.Directives
         private readonly int min;
         private readonly int max;
 
-        private readonly IArgumentParser<(int, int)> argumentParser;
+        private readonly IArgumentParser<(int, int)> argumentParser = new IntegerRangeParser();
 
         public IntegerDirective(Random random, string args)
             : base(random)
         {
-            min = int.MinValue;
-            max = int.MaxValue;
+            (this.min, this.max) = this.argumentParser.Parse(args);
         }
 
-        public override object Execute() => random.Next(min, max);
+        public override object Execute() => random.Next(this.min, this.max);
     }
 }

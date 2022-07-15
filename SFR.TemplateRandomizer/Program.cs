@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using BenchmarkDotNet.Running;
+using Newtonsoft.Json.Linq;
 
 namespace Drafts
 {
@@ -6,15 +7,21 @@ namespace Drafts
     {
         public static async Task Main(string[] args)
         {
-            //BenchmarkRunner.Run<Benchmark>();
-            var cts = new CancellationTokenSource();
+            //var cts = new CancellationTokenSource();
+            //await PrintResult(cts.Token);
+
+            BenchmarkRunner.Run<Benchmark>();
+        }
+
+        public static async Task PrintResult(CancellationToken cancellationToken)
+        {
 
             var path = Path.Combine(Directory.GetCurrentDirectory(), "template.json");
             string json = File.ReadAllText(path);
             var gen = new TemplateRandomizer(JObject.Parse(json));
 
             var timer = new PeriodicTimer(TimeSpan.FromSeconds(1));
-            while(await timer.WaitForNextTickAsync(cts.Token) && !cts.Token.IsCancellationRequested)
+            while (await timer.WaitForNextTickAsync(cancellationToken) && !cancellationToken.IsCancellationRequested)
             {
                 Console.Clear();
                 var generated = gen.Randomize();

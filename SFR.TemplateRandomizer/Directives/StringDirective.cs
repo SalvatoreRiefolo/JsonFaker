@@ -8,18 +8,17 @@ namespace Drafts.Directives
         private readonly int max;
         private readonly string allowedChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
 
-        private readonly IArgumentParser<(int, int)> argumentParser;
+        private readonly IArgumentParser<(int, int)> argumentParser = new IntegerRangeParser((0, 255));
 
         public StringDirective(Random random, string args)
             : base(random)
         {
-            this.min = int.MinValue;
-            this.max = int.MaxValue;
+            (this.min, this.max) = this.argumentParser.Parse(args);
         }
 
         public override object Execute()
         {
-            var count = base.random.Next(min, max);
+            var count = base.random.Next(this.min, this.max);
             var res = new char[count];
 
             for (int i = 0; i < count; i++)
