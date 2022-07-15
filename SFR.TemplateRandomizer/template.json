@@ -1,0 +1,29 @@
+{
+  "main": {
+    "name": "$int",
+    "surname": "$string",
+    "list": [
+      "$int 0..100 $repeat 5"
+    ],
+    "bucket": {
+      "asd": 456,
+      "innerList": [
+        123,
+        {
+          "a": 1,
+          "b": 2
+        }
+      ],
+      "innerBucket": {
+        "$int $repeat 1..4": [
+          "&personSection $repeat 1..4"
+        ]
+      }
+    }
+  },
+
+  "personSection": {
+    "first": 1,
+    "name": "$string"
+  }
+}

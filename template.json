@@ -1,0 +1,4 @@
+{
+  "COIL": "rnd(string 10)",
+  "NUMBER":  "inc(integer 10)"
+}
