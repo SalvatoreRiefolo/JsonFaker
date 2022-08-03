@@ -29,13 +29,12 @@ namespace SFR.TemplateRandomizer
             string json = File.ReadAllText(path);
             var gen = new TemplateRandomizer(JObject.Parse(json));
 
-            var timer = new PeriodicTimer(TimeSpan.FromSeconds(1));
-
-            while (await timer.WaitForNextTickAsync(cancellationToken) && !cancellationToken.IsCancellationRequested)
+            while (!cancellationToken.IsCancellationRequested)
             {
                 Console.Clear();
                 var generated = gen.Randomize();
                 Console.WriteLine(generated["main"]);
+                Console.ReadLine();
             }
         }
     }
