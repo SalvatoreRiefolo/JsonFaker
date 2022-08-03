@@ -140,8 +140,8 @@ namespace SFR.TemplateRandomizer
             if (!tokenValue.StartsWith('$'))
                 return token;
 
-            ITypeGenerator directive = typeGenerators.GetOrCreate(token.ToString(), () => CreateTypeGenerator(token.ToString()));
-            return new JValue(directive.Execute());
+            ITypeGenerator generator = typeGenerators.GetOrCreate(token.ToString(), () => CreateTypeGenerator(token.ToString()));
+            return new JValue(generator.Execute());
         }
 
         private ITypeGenerator CreateTypeGenerator(string token)
@@ -154,6 +154,8 @@ namespace SFR.TemplateRandomizer
             {
                 Tokens.Integer => new IntegerGenerator(random, args),
                 Tokens.String => new StringGenerator(random, args),
+                Tokens.Double => new DoubleGenerator(random, args),
+                Tokens.Date => new DateGenerator(random, args),
                 _ => throw new NotImplementedException($"Type generator for type '{tokens[0]}' not implemented")
             };
         }
