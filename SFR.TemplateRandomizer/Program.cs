@@ -9,6 +9,7 @@ namespace SFR.TemplateRandomizer
     // TODO check se max < min
     // TODO possibilità di definire solo min o solo max (10.. | ..100)
     // TODO defaults globali
+    // TODO sostituire CreateTypeGenerator con factory
 
     public static class Program
     {
@@ -16,14 +17,14 @@ namespace SFR.TemplateRandomizer
         {
 #if DEBUG
             var cts = new CancellationTokenSource();
-            await PrintResult(cts.Token);
+            await PrintResultAsync(cts.Token);
 #endif
 #if (!DEBUG)
             BenchmarkRunner.Run<Benchmark>();
 #endif
         }
 
-        public static async Task PrintResult(CancellationToken cancellationToken)
+        public static Task PrintResultAsync(CancellationToken cancellationToken)
         {
             var path = Path.Combine(Directory.GetCurrentDirectory(), "template.json");
             string json = File.ReadAllText(path);
@@ -36,6 +37,8 @@ namespace SFR.TemplateRandomizer
                 Console.WriteLine(generated["main"]);
                 Console.ReadLine();
             }
+
+            return Task.CompletedTask;
         }
     }
 }
