@@ -6,5 +6,6 @@
         public const string Integer = "$int";
         public const string String = "$string";
         public const string Double = "$double";
+        public const string Date = "$date";
     }
 }

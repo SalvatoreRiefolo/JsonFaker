@@ -1,6 +1,6 @@
 {
   "main": {
-    "id": "$int 2000..3000",
+    "id": "$int 2000",
     "name": "$string 10",
     "surname": "$string 20",
     "numbers": [
@@ -17,7 +17,7 @@
       ],
       "innerBucket": {
         "$int 100..1000 $repeat 1..2": [
-          "&person $repeat 1..2"
+          "&person $repeat 5"
         ]
       }
     }

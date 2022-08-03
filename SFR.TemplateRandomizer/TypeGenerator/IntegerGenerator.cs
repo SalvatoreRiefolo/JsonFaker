@@ -12,9 +12,9 @@ namespace SFR.TemplateRandomizer.TypeGenerator
         public IntegerGenerator(Random random, string args)
             : base(random)
         {
-            (min, max) = argumentParser.Parse(args);
+            (this.min, this.max) = this.argumentParser.Parse(args);
         }
 
-        public override object Execute() => random.Next(min, max);
+        public override object Execute() => base.random.Next(this.min, this.max);
     }
 }

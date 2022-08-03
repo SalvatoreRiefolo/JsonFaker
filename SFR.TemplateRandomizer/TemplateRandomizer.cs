@@ -11,7 +11,7 @@ namespace SFR.TemplateRandomizer
         private readonly Random random = new(Environment.TickCount);
         private readonly IArgumentParser<(int, int)> rangeParser = new IntegerRangeParser();
 
-        private readonly IDictionary<string, ITypeGenerator> directives = new Dictionary<string, ITypeGenerator>();
+        private readonly IDictionary<string, ITypeGenerator> typeGenerators = new Dictionary<string, ITypeGenerator>();
         private readonly JObject template;
 
         public TemplateRandomizer(JObject template)
@@ -81,11 +81,11 @@ namespace SFR.TemplateRandomizer
                     for (int i = 0; i < random.Next(low, high); i++)
                     {
                         var retryCount = 5;
-                        while (!result.TryAdd(SwapToken(tokens[0].Trim()).ToString(), current.Value) && retryCount > 0)                        
+                        while (!result.TryAdd(SwapToken(tokens[0].Trim()).ToString(), current.Value) && retryCount > 0)
                             retryCount--;
-                        
+
                         if (retryCount == 0)
-                            result.Add($"{SwapToken(tokens[0].Trim())}_{i}", current.Value);                    
+                            result.Add($"{SwapToken(tokens[0].Trim())}_{i}", current.Value);
                     }
                 }
                 else
@@ -135,16 +135,16 @@ namespace SFR.TemplateRandomizer
         {
             var tokenValue = token.ToString();
             if (tokenValue.StartsWith('&'))
-                return RandomizeProperties(RepeatProperties(template.GetValue(tokenValue) as JObject));
+                return RandomizeProperties(RepeatProperties(this.template.GetValue(tokenValue) as JObject));
 
             if (!tokenValue.StartsWith('$'))
                 return token;
 
-            ITypeGenerator directive = directives.GetOrCreate(token.ToString(), () => CreateDirective(token.ToString()));
+            ITypeGenerator directive = typeGenerators.GetOrCreate(token.ToString(), () => CreateTypeGenerator(token.ToString()));
             return new JValue(directive.Execute());
         }
 
-        private ITypeGenerator CreateDirective(string token)
+        private ITypeGenerator CreateTypeGenerator(string token)
         {
             var tokens = token.Split(' ');
 
@@ -154,7 +154,7 @@ namespace SFR.TemplateRandomizer
             {
                 Tokens.Integer => new IntegerGenerator(random, args),
                 Tokens.String => new StringGenerator(random, args),
-                _ => throw new NotImplementedException($"Directive '{tokens[0]}' not implemented")
+                _ => throw new NotImplementedException($"Type generator for type '{tokens[0]}' not implemented")
             };
         }
     }

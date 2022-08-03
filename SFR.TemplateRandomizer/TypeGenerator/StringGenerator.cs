@@ -13,17 +13,17 @@ namespace SFR.TemplateRandomizer.TypeGenerator
         public StringGenerator(Random random, string args)
             : base(random)
         {
-            (min, max) = argumentParser.Parse(args);
+            (this.min, this.max) = this.argumentParser.Parse(args);
         }
 
         public override object Execute()
         {
-            var count = random.Next(min, max);
+            var count = base.random.Next(this.min, this.max);
             var res = new char[count];
 
             for (int i = 0; i < count; i++)
             {
-                res[i] = allowedChars[random.Next(0, allowedChars.Length)];
+                res[i] = this.allowedChars[base.random.Next(0, this.allowedChars.Length)];
             }
 
             return new string(res);
