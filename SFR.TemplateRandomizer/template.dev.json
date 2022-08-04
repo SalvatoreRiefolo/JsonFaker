@@ -1,7 +1,7 @@
 {
   "main": {
-    "persons": [
-      "&person $repeat 2..5"
+    "$int 0..100 $repeat 3": [
+      "&person $repeat 0..5"
     ]
   },
 

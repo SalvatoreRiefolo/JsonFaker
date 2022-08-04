@@ -8,19 +8,72 @@ namespace SFR.TemplateRandomizer
 {
     public partial class TemplateRandomizer
     {
+        private JObject template;
+
+        public JObject Template {
+            get
+            {
+                return new JObject(template);
+            }
+            private set
+            {
+                template = value;
+            }
+        }
+
         private readonly Random random = new(Environment.TickCount);
         private readonly IArgumentParser<(int, int)> rangeParser = new IntegerRangeParser();
 
         private readonly IDictionary<string, ITypeGenerator> typeGenerators = new Dictionary<string, ITypeGenerator>();
-        private readonly JObject template;
 
         public TemplateRandomizer(JObject template)
         {
-            this.template = template ?? throw new ArgumentNullException(nameof(template));
+            this.Template = template ?? throw new ArgumentNullException(nameof(template));
         }
 
         public JObject Randomize()
-            => RandomizeProperties(RepeatProperties(template));
+            => RandomizeProperties(RepeatProperties(AddRepeatedProperties(Template)));
+
+        public JObject AddRepeatedProperties(JObject jobject)
+        {
+            var result = new JObject();
+
+            foreach (var prop in jobject.Properties())
+            {
+                var current = new JProperty(prop.Name);
+                
+                if (current.Name.Contains(Tokens.Repeat))
+                {
+                    var tokens = Regex.Split(current.Name, Patterns.Repeat);
+                    var (low, high) = rangeParser.Parse(tokens[1]);
+
+                    for (int i = 0; i < random.Next(low, high); i++)
+                    {
+                        var retryCount = 5;
+                        while (!result.TryAdd(SwapToken(tokens[0].Trim()).ToString(), prop.Value) && retryCount > 0)
+                            retryCount--;
+
+                        if (retryCount == 0)
+                            result.Add($"{SwapToken(tokens[0].Trim())}_{i}", prop.Value);
+                    }
+
+                    continue;
+                }
+                else
+                {
+                    current.Value = prop.Value;
+                }
+
+                if (prop.Value.Type == JTokenType.Object)
+                {
+                    current.Value = AddRepeatedProperties((JObject)prop.Value);
+                }
+
+                result.Add(current);
+            }
+
+            return result;
+        }
 
         // try to iterate on each property 2 times to perform repeat && replace
         public JObject RepeatProperties(JObject jobject)
@@ -30,6 +83,22 @@ namespace SFR.TemplateRandomizer
             foreach (var prop in jobject.Properties())
             {
                 var current = new JProperty(prop.Name);
+
+                if (current.Name.Contains(Tokens.Repeat))
+                {
+                    var tokens = Regex.Split(current.Name, Patterns.Repeat);
+                    var (low, high) = rangeParser.Parse(tokens[1]);
+
+                    for (int i = 0; i < random.Next(low, high); i++)
+                    {
+                        var retryCount = 5;
+                        while (!result.TryAdd(SwapToken(tokens[0].Trim()).ToString(), prop.Value) && retryCount > 0)
+                            retryCount--;
+
+                        if (retryCount == 0)
+                            result.Add($"{SwapToken(tokens[0].Trim())}_{i}", prop.Value);
+                    }
+                }
 
                 switch (prop.Value.Type)
                 {
@@ -73,25 +142,7 @@ namespace SFR.TemplateRandomizer
                         break;
                 }
 
-                if (current.Name.Contains(Tokens.Repeat))
-                {
-                    var tokens = Regex.Split(current.Name, Patterns.Repeat);
-                    var (low, high) = rangeParser.Parse(tokens[1]);
-
-                    for (int i = 0; i < random.Next(low, high); i++)
-                    {
-                        var retryCount = 5;
-                        while (!result.TryAdd(SwapToken(tokens[0].Trim()).ToString(), current.Value) && retryCount > 0)
-                            retryCount--;
-
-                        if (retryCount == 0)
-                            result.Add($"{SwapToken(tokens[0].Trim())}_{i}", current.Value);
-                    }
-                }
-                else
-                {
-                    result.Add(current);
-                }
+                result.Add(current);
             }
 
             return result;
@@ -126,10 +177,8 @@ namespace SFR.TemplateRandomizer
                         break;
 
                     default:
-                        if (prop.Value.ToString() == Tokens.Sequence)
-                            result[prop.Name] = seqCounter;
-                        else
-                            result[prop.Name] = SwapToken(prop.Value);
+                        var value = prop.Value.ToString() == Tokens.Sequence ? seqCounter : SwapToken(prop.Value);
+                        result[prop.Name] = value;
                         break;
                 }
             }
@@ -141,7 +190,7 @@ namespace SFR.TemplateRandomizer
         {
             var tokenValue = token.ToString();
             if (tokenValue.StartsWith('&'))
-                return RandomizeProperties(RepeatProperties(this.template.GetValue(tokenValue) as JObject), seqCounter);
+                return RandomizeProperties(RepeatProperties(this.Template.GetValue(tokenValue) as JObject), seqCounter);
 
             if (!tokenValue.StartsWith('$'))
                 return token;

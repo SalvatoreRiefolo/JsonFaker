@@ -11,7 +11,7 @@ namespace SFR.TemplateRandomizer
 
         public Benchmark()
         {
-            var template = File.ReadAllText(Path.Combine(Directory.GetCurrentDirectory(), "template.json"));
+            var template = File.ReadAllText(Path.Combine(Directory.GetCurrentDirectory(), "template.dev.json"));
             jobj = JObject.Parse(template);
             gen = new TemplateRandomizer(jobj);
         }
@@ -23,9 +23,15 @@ namespace SFR.TemplateRandomizer
         }
 
         [Benchmark]
-        public JObject ReplaceRepeatOnly()
+        public JObject ReplacePropertiesRepeatOnly()
         {
             return gen.RepeatProperties(jobj);
+        }
+
+        [Benchmark]
+        public JObject AddRepeatedPropertiesOnly()
+        {
+            return gen.AddRepeatedProperties(jobj);
         }
     }
 }

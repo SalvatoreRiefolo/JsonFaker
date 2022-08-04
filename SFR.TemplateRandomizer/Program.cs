@@ -27,7 +27,7 @@ namespace SFR.TemplateRandomizer
 
         public static Task PrintResultAsync(CancellationToken cancellationToken)
         {
-            var path = Path.Combine(Directory.GetCurrentDirectory(), "template.json");
+            var path = Path.Combine(Directory.GetCurrentDirectory(), "template.dev.json");
             string json = File.ReadAllText(path);
             var gen = new TemplateRandomizer(JObject.Parse(json));
 
@@ -35,6 +35,7 @@ namespace SFR.TemplateRandomizer
             {
                 Console.Clear();
                 var generated = gen.Randomize();
+                //var generated = gen.ReplaceAuxiliarySections(gen.Template);
                 Console.WriteLine(generated["main"]);
                 Console.ReadLine();
             }
