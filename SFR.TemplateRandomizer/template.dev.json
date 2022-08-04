@@ -1,30 +1,13 @@
 {
   "main": {
-    "id": "$int 2000",
-    "name": "$string 10",
-    "surname": "$string 20",
-    "numbers": [
-      "$int 0..100 $repeat 5"
-    ],
-    "bucket": {
-      "code": 456,
-      "innerList": [
-        123,
-        {
-          "a": 1,
-          "b": "$int 1000..1000000"
-        }
-      ],
-      "innerBucket": {
-        "$int 100..1000 $repeat 1..2": [
-          "&person $repeat 5"
-        ]
-      }
-    }
+    "persons": [
+      "&person $repeat 2..5"
+    ]
   },
 
   "&person": {
-    "first": 1,
+    "SEQ_NUM": "$seq",
     "name": "$string 10"
   }
 }
+

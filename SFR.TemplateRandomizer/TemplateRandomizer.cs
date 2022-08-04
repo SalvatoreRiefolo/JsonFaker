@@ -97,7 +97,7 @@ namespace SFR.TemplateRandomizer
             return result;
         }
 
-        public JObject RandomizeProperties(JObject jobject)
+        public JObject RandomizeProperties(JObject jobject, int seqCounter = -1)
         {
             var result = new JObject();
 
@@ -111,19 +111,25 @@ namespace SFR.TemplateRandomizer
 
                     case JTokenType.Array:
                         var arr = new JArray();
-                        foreach (var item in (JArray)prop.Value)
-                        {
-                            if (item.Type == JTokenType.Object)
-                                arr.Add(RandomizeProperties((JObject)item));
-                            else
-                                arr.Add(SwapToken(item));
-                        }
 
+                        var currentArr = (JArray)prop.Value;
+                        for (int i = 0; i < currentArr.Count; i++)
+                        {
+                            var item = currentArr[i];
+                            if (item.Type == JTokenType.Object)
+                                arr.Add(RandomizeProperties((JObject)item, i));
+                            else
+                                arr.Add(SwapToken(item, i));
+                        }
+                       
                         result[prop.Name] = arr;
                         break;
 
                     default:
-                        result[prop.Name] = SwapToken(prop.Value);
+                        if (prop.Value.ToString() == Tokens.Sequence)
+                            result[prop.Name] = seqCounter;
+                        else
+                            result[prop.Name] = SwapToken(prop.Value);
                         break;
                 }
             }
@@ -131,11 +137,11 @@ namespace SFR.TemplateRandomizer
             return result;
         }
 
-        private JToken SwapToken(JToken token)
+        private JToken SwapToken(JToken token, int seqCounter = -1)
         {
             var tokenValue = token.ToString();
             if (tokenValue.StartsWith('&'))
-                return RandomizeProperties(RepeatProperties(this.template.GetValue(tokenValue) as JObject));
+                return RandomizeProperties(RepeatProperties(this.template.GetValue(tokenValue) as JObject), seqCounter);
 
             if (!tokenValue.StartsWith('$'))
                 return token;

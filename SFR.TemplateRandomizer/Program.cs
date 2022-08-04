@@ -10,6 +10,7 @@ namespace SFR.TemplateRandomizer
     // TODO possibilità di definire solo min o solo max (10.. | ..100)
     // TODO defaults globali
     // TODO sostituire CreateTypeGenerator con factory
+    // TODO increment, decrement e step in token $seq
 
     public static class Program
     {
