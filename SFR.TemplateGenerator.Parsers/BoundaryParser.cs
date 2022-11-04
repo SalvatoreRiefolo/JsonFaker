@@ -15,18 +15,13 @@ public abstract class BoundaryParser<T> : IArgumentParser<(T, T)>
 
     public (T, T) Parse(string input)
     {
-        return ParseInternal(input);
-    }
-
-    private (T, T) ParseInternal(string input)
-    {
         if (input is null)
             return (defaultMin, defaultMax);
 
         try
         {
-            var (first, second) = ParserUtilities.SplitArguments(input, "..");
-                
+            var (first, second) = ParserUtilities.SplitBoundaryArguments(input, "..");
+
             var start = ParserUtilities.ParseArgument(first, parser, defaultMin);
             var end = ParserUtilities.ParseArgument(second, parser, defaultMax);
 

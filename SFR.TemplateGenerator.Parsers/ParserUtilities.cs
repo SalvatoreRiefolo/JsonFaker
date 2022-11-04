@@ -2,12 +2,16 @@ namespace SFR.TemplateGenerator.Parsers;
 
 public static class ParserUtilities
 {
-    public static (string first, string second) SplitArguments(string arguments, string delimiter)
+    public static (string first, string second) SplitBoundaryArguments(string arguments, string delimiter)
     {
         if (!arguments.Contains(delimiter))
             return (arguments, arguments);
-        
+
         var tokenized = arguments.Split(delimiter);
+
+        if (tokenized.Length != 2)
+            throw new ArgumentException("Arguments cannot be parsed as boundaries", nameof(arguments));
+
         return (tokenized[0], tokenized[1]);
     }
 

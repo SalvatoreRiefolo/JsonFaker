@@ -12,7 +12,7 @@ namespace SFR.TemplateRandomizer
         private readonly JObject template;
 
         private readonly Random random = new(Environment.TickCount);
-        private readonly IArgumentParser<int> rangeParser = new IntegerRangeParser();
+        private readonly IArgumentParser<(int, int)> rangeParser = new IntegerRangeParser();
         private readonly IDictionary<string, ITypeGenerator> typeGenerators = new Dictionary<string, ITypeGenerator>();
         private readonly ITypeGeneratorFactory typeGeneratorFactory;
 
