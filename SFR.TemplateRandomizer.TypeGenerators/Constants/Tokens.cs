@@ -1,7 +1,10 @@
-﻿namespace SFR.TemplateRandomizer.Constants
+﻿namespace SFR.TemplateRandomizer.TypeGenerators.Constants
 {
     public static class Tokens
     {
+        public const char TokenSymbol = '$';
+        public const char ReferenceSymbol= '&';
+
         public const string Repeat = "$repeat";
         public const string Integer = "$int";
         public const string String = "$string";

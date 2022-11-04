@@ -5,10 +5,8 @@ namespace SFR.TemplateRandomizer
 {
     // TODO datetime richiede data completa, possibilità di usare solo parte della data (anno, anno+mese)
     // TODO max cifre decimali per double
-    // TODO regex componibile per argomenti aggiuntivi 
     // TODO check se max < min
-    // TODO possibilità di definire solo min o solo max (10.. | ..100)
-    // TODO defaults globali
+    // TODO defaults globali (max/min per tipo, max cifre decimali, datetime format...)
     // TODO sostituire CreateTypeGenerator con factory
     // TODO increment, decrement e step in token $seq
 
@@ -25,7 +23,7 @@ namespace SFR.TemplateRandomizer
 #endif
         }
 
-        public static Task PrintResultAsync(CancellationToken cancellationToken)
+        private static Task PrintResultAsync(CancellationToken cancellationToken)
         {
             var path = Path.Combine(Directory.GetCurrentDirectory(), "template.dev.json");
             string json = File.ReadAllText(path);

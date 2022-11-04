@@ -1,4 +1,4 @@
-﻿namespace SFR.TemplateRandomizer.TypeGenerator
+﻿namespace SFR.TemplateRandomizer.TypeGenerators.Abstractions
 {
     public interface ITypeGenerator
     {
