@@ -1,38 +1,30 @@
 ﻿using Newtonsoft.Json.Linq;
-using SFR.TemplateRandomizer.Constants;
-using SFR.TemplateRandomizer.Parsers;
-using SFR.TemplateRandomizer.TypeGenerator;
 using System.Text.RegularExpressions;
+using SFR.TemplateGenerator.Parsers;
+using SFR.TemplateRandomizer.TypeGenerators;
+using SFR.TemplateRandomizer.TypeGenerators.Abstractions;
+using SFR.TemplateRandomizer.TypeGenerators.Constants;
 
 namespace SFR.TemplateRandomizer
 {
-    public partial class TemplateRandomizer
+    public class TemplateRandomizer
     {
-        private JObject template;
-
-        public JObject Template {
-            get
-            {
-                return new JObject(template);
-            }
-            private set
-            {
-                template = value;
-            }
-        }
+        private readonly JObject template;
 
         private readonly Random random = new(Environment.TickCount);
         private readonly IArgumentParser<(int, int)> rangeParser = new IntegerRangeParser();
 
         private readonly IDictionary<string, ITypeGenerator> typeGenerators = new Dictionary<string, ITypeGenerator>();
+        private readonly ITypeGeneratorFactory typeGeneratorFactory;
 
         public TemplateRandomizer(JObject template)
         {
-            this.Template = template ?? throw new ArgumentNullException(nameof(template));
+            this.template = template ?? throw new ArgumentNullException(nameof(template));
+            typeGeneratorFactory = new TypeGeneratorFactory(this.random);
         }
 
         public JObject Randomize()
-            => RandomizeProperties(RepeatProperties(AddRepeatedProperties(Template)));
+            => RandomizeProperties(RepeatProperties(AddRepeatedProperties(template)));
 
         public JObject AddRepeatedProperties(JObject jobject)
         {
@@ -121,9 +113,9 @@ namespace SFR.TemplateRandomizer
                             if (itemValue.Contains(Tokens.Repeat))
                             {
                                 var tokens = Regex.Split(itemValue, Patterns.Repeat);
-                                var (Low, High) = rangeParser.Parse(tokens[1]);
+                                var (low, high) = rangeParser.Parse(tokens[1]);
 
-                                for (int i = 0; i < random.Next(Low, High); i++)
+                                for (int i = 0; i < random.Next(low, high); i++)
                                 {
                                     arr.Add($"{tokens.First().Trim()}");
                                 }
@@ -148,7 +140,7 @@ namespace SFR.TemplateRandomizer
             return result;
         }
 
-        public JObject RandomizeProperties(JObject jobject, int seqCounter = -1)
+        private JObject RandomizeProperties(JObject jobject, int seqCounter = -1)
         {
             var result = new JObject();
 
@@ -189,44 +181,14 @@ namespace SFR.TemplateRandomizer
         private JToken SwapToken(JToken token, int seqCounter = -1)
         {
             var tokenValue = token.ToString();
-            if (tokenValue.StartsWith('&'))
-                return RandomizeProperties(RepeatProperties(this.Template.GetValue(tokenValue) as JObject), seqCounter);
+            if (tokenValue.StartsWith(Tokens.ReferenceSymbol))
+                return RandomizeProperties(RepeatProperties(this.template.GetValue(tokenValue) as JObject), seqCounter);
 
-            if (!tokenValue.StartsWith('$'))
+            if (!tokenValue.StartsWith(Tokens.TokenSymbol))
                 return token;
 
-            ITypeGenerator generator = typeGenerators.GetOrCreate(token.ToString(), () => CreateTypeGenerator(token.ToString()));
+            var generator = typeGenerators.GetOrCreate(token.ToString(), () => typeGeneratorFactory.CreateTypeGenerator(token.ToString()));
             return new JValue(generator.Execute());
-        }
-
-        private ITypeGenerator CreateTypeGenerator(string token)
-        {
-            var tokens = token.Split(' ');
-
-            var args = tokens.Length > 1 ? tokens[1] : null;
-
-            return tokens[0] switch
-            {
-                Tokens.Integer => new IntegerGenerator(random, args),
-                Tokens.String => new StringGenerator(random, args),
-                Tokens.Double => new DoubleGenerator(random, args),
-                Tokens.Date => new DateGenerator(random, args),
-                _ => throw new NotImplementedException($"Type generator for type '{tokens[0]}' not implemented")
-            };
-        }
-    }
-
-    public static class Extensions
-    {
-        public static T GetOrCreate<T>(this IDictionary<string, T> cache, string key, Func<T> generator)
-        {
-            if (cache.TryGetValue(key, out T value))
-                return value;
-
-            T result = generator();
-            cache[key] = result;
-
-            return result;
         }
     }
 }

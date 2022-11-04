@@ -1,8 +1,9 @@
-﻿using SFR.TemplateRandomizer.Parsers;
+﻿using SFR.TemplateGenerator.Parsers;
+using SFR.TemplateRandomizer.TypeGenerators.Models;
 
-namespace SFR.TemplateRandomizer.TypeGenerator
+namespace SFR.TemplateRandomizer.TypeGenerators
 {
-    public class DateGenerator : TypeGenerator
+    internal class DateGenerator : TypeGenerator
     {
         private readonly DateTimeOffset min;
         private readonly DateTimeOffset max;
@@ -10,10 +11,10 @@ namespace SFR.TemplateRandomizer.TypeGenerator
         private readonly IArgumentParser<(DateTimeOffset, DateTimeOffset)> argumentParser = new DateRangeParser();
         private readonly string formatting;
 
-        public DateGenerator(Random random, string args, string formatting = "yyyy-MM-ddThh:mm:ssZ")
+        public DateGenerator(Random random, IGeneratorArgument args, string formatting = "yyyy-MM-ddThh:mm:ssZ")
             : base(random)
         {
-            (min, max) = this.argumentParser.Parse(args);
+            (min, max) = this.argumentParser.Parse(args.Value);
             this.formatting = formatting;
         }
 
@@ -21,7 +22,7 @@ namespace SFR.TemplateRandomizer.TypeGenerator
         {
             var range = this.max - this.min;
 
-            var randTimeSpan = new TimeSpan((long)(base.random.NextDouble() * range.Ticks));
+            var randTimeSpan = new TimeSpan((long)(base.Random.NextDouble() * range.Ticks));
 
             return (this.min + randTimeSpan).ToString(formatting);
         }

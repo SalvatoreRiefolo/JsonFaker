@@ -1,4 +1,4 @@
-﻿namespace SFR.TemplateRandomizer.Constants
+﻿namespace SFR.TemplateRandomizer.TypeGenerators.Constants
 {
     public static class Patterns
     {

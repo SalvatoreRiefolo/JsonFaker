@@ -1,6 +1,7 @@
-﻿using SFR.TemplateRandomizer.Parsers;
+﻿using SFR.TemplateGenerator.Parsers;
+using SFR.TemplateRandomizer.TypeGenerators.Models;
 
-namespace SFR.TemplateRandomizer.TypeGenerator
+namespace SFR.TemplateRandomizer.TypeGenerators
 {
     internal class StringGenerator : TypeGenerator
     {
@@ -10,20 +11,20 @@ namespace SFR.TemplateRandomizer.TypeGenerator
 
         private readonly IArgumentParser<(int, int)> argumentParser = new IntegerRangeParser(0, 255);
 
-        public StringGenerator(Random random, string args)
+        public StringGenerator(Random random, IGeneratorArgument args)
             : base(random)
         {
-            (this.min, this.max) = this.argumentParser.Parse(args);
+            (this.min, this.max) = this.argumentParser.Parse(args.Value);
         }
 
         public override object Execute()
         {
-            var count = base.random.Next(this.min, this.max);
+            var count = base.Random.Next(this.min, this.max);
             var res = new char[count];
 
             for (int i = 0; i < count; i++)
             {
-                res[i] = this.allowedChars[base.random.Next(0, this.allowedChars.Length)];
+                res[i] = this.allowedChars[base.Random.Next(0, this.allowedChars.Length)];
             }
 
             return new string(res);
