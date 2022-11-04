@@ -1,22 +1,24 @@
 ﻿# File template
 
 Il file .json usato come template è composto come segue:
+- sezione main: OBBLIGATORIA
+- sezioni ausiliarie: OPZIONALI
 
+```
 {
-	// sezione main: OBBLIGATORIA
-	"main": {
-		...json che viene randomizzato e restituito come risultato...
-	},
+    "main": {
+        ...json che viene randomizzato e restituito come risultato...
+    },
 
-	// sezioni ausiliarie: OPZIONALI
-	"&person": {
-		...
-	},
-	"&address": {
-		...
-	}
+    
+    "&aux_1": {
 	...
+    },
+    "&aux_2": {
+	...
+    }
 }
+```
 
 # Keyword di tipo e argomenti
 
