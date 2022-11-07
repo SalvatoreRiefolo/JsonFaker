@@ -7,7 +7,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\SFR.TemplateGenerator.Parsers\SFR.TemplateGenerator.Parsers.csproj" />
+      <ProjectReference Include="..\SFR.TemplateRandomizer.Parsers\SFR.TemplateRandomizer.Parsers.csproj" />
     </ItemGroup>
 
 </Project>

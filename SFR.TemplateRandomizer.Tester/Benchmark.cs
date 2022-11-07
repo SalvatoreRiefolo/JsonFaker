@@ -1,7 +1,7 @@
 ﻿using BenchmarkDotNet.Attributes;
 using Newtonsoft.Json.Linq;
 
-namespace SFR.TemplateRandomizer
+namespace SFR.TemplateRandomizer.Tester
 {
     [MemoryDiagnoser]
     public class Benchmark
@@ -22,16 +22,16 @@ namespace SFR.TemplateRandomizer
             return gen.Randomize();
         }
 
-        [Benchmark]
-        public JObject ReplacePropertiesRepeatOnly()
-        {
-            return gen.RepeatProperties(jobj);
-        }
-
-        [Benchmark]
-        public JObject AddRepeatedPropertiesOnly()
-        {
-            return gen.AddRepeatedProperties(jobj);
-        }
+        // [Benchmark]
+        // public JObject ReplacePropertiesRepeatOnly()
+        // {
+        //     return gen.RepeatProperties(jobj);
+        // }
+        //
+        // [Benchmark]
+        // public JObject AddRepeatedPropertiesOnly()
+        // {
+        //     return gen.AddRepeatedProperties(jobj);
+        // }
     }
 }

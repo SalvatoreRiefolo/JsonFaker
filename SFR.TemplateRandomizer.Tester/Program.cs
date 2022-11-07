@@ -1,14 +1,12 @@
-﻿using BenchmarkDotNet.Running;
-using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json.Linq;
 
-namespace SFR.TemplateRandomizer
+namespace SFR.TemplateRandomizer.Tester
 {
+    // TODO increment, decrement e step in token $seq
     // TODO datetime richiede data completa, possibilità di usare solo parte della data (anno, anno+mese)
     // TODO max cifre decimali per double
-    // TODO check se max < min
     // TODO defaults globali (max/min per tipo, max cifre decimali, datetime format...)
     // TODO sostituire CreateTypeGenerator con factory
-    // TODO increment, decrement e step in token $seq
 
     public static class Program
     {

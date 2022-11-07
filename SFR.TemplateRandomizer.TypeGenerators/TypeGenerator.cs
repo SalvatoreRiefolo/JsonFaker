@@ -6,10 +6,7 @@ namespace SFR.TemplateRandomizer.TypeGenerators
     {
         protected readonly Random Random;
 
-        protected TypeGenerator(Random random)
-        {
-            this.Random = random;
-        }
+        protected TypeGenerator(Random random) => this.Random = random;
 
         public abstract object Execute();
     }

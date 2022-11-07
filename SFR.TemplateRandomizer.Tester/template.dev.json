@@ -6,7 +6,7 @@
   },
 
   "&person": {
-    "SEQ_NUM": "$seq",
-    "name": "$double 0..1,0"
+    "SEQ_NUM": "$seq start 10 step 2 inc",
+    "name": "$double 0..1.5"
   }
 }

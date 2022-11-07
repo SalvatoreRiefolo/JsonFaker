@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json.Linq;
-using System.Text.RegularExpressions;
 using SFR.TemplateGenerator.Parsers;
 using SFR.TemplateRandomizer.TypeGenerators;
 using SFR.TemplateRandomizer.TypeGenerators.Abstractions;
@@ -23,9 +22,9 @@ namespace SFR.TemplateRandomizer
         }
 
         public JObject Randomize()
-            => RandomizeProperties(RepeatProperties(AddRepeatedProperties(template)));
+            => RandomizeProperties(RepeatValues(RepeatProperties(template)));
 
-        internal JObject AddRepeatedProperties(JObject jobject)
+        private JObject RepeatProperties(JObject jobject)
         {
             var result = new JObject();
 
@@ -57,7 +56,7 @@ namespace SFR.TemplateRandomizer
 
                 if (prop.Value.Type == JTokenType.Object)
                 {
-                    current.Value = AddRepeatedProperties((JObject)prop.Value);
+                    current.Value = RepeatProperties((JObject)prop.Value);
                 }
 
                 result.Add(current);
@@ -66,8 +65,7 @@ namespace SFR.TemplateRandomizer
             return result;
         }
 
-        // try to iterate on each property 2 times to perform repeat && replace
-        internal JObject RepeatProperties(JObject jobject)
+        private JObject RepeatValues(JObject jobject)
         {
             var result = new JObject();
 
@@ -78,20 +76,20 @@ namespace SFR.TemplateRandomizer
                 switch (property.Value.Type)
                 {
                     case JTokenType.Object:
-                        current.Value = RepeatProperties((JObject)property.Value);
+                        current.Value = RepeatValues((JObject)property.Value);
                         break;
 
                     case JTokenType.Array:
                         var arr = new JArray();
                         foreach (var arrItem in (JArray)property.Value)
                         {
-                            var itemValue = arrItem.ToString();
-
                             if (arrItem.Type == JTokenType.Object)
                             {
-                                arr.Add(RepeatProperties((JObject)arrItem));
+                                arr.Add(RepeatValues((JObject)arrItem));
                                 continue;
                             }
+                            
+                            var itemValue = arrItem.ToString();
 
                             if (itemValue.Contains(Tokens.Repeat))
                             {
@@ -100,7 +98,7 @@ namespace SFR.TemplateRandomizer
 
                                 for (int i = 0; i < random.Next(low, high); i++)
                                 {
-                                    arr.Add($"{tokens[0]}");
+                                    arr.Add(tokens[0]);
                                 }
                             }
                             else
@@ -165,7 +163,7 @@ namespace SFR.TemplateRandomizer
         {
             var tokenValue = token.ToString();
             if (tokenValue.StartsWith(Tokens.ReferenceSymbol))
-                return RandomizeProperties(RepeatProperties(this.template.GetValue(tokenValue) as JObject), seqCounter);
+                return RandomizeProperties(RepeatValues(this.template.GetValue(tokenValue) as JObject), seqCounter);
 
             if (!tokenValue.StartsWith(Tokens.TokenSymbol))
                 return token;
