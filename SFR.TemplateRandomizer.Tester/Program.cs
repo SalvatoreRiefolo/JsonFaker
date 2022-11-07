@@ -2,15 +2,14 @@
 
 namespace SFR.TemplateRandomizer.Tester
 {
-    // TODO increment, decrement e step in token $seq
-    // TODO datetime richiede data completa, possibilità di usare solo parte della data (anno, anno+mese)
-    // TODO max cifre decimali per double
-    // TODO defaults globali (max/min per tipo, max cifre decimali, datetime format...)
-    // TODO sostituire CreateTypeGenerator con factory
+    // TODO increment, decrement and step for $seq keyword 
+    // TODO datetime requires full date, possibility to use only part of date (year, year+month)
+    // TODO max decimal digits for double
+    // TODO replace CreateTypeGenerator with factory
 
     public static class Program
     {
-        public static async Task Main(string[] args)
+        public static async Task Main()
         {
 #if DEBUG
             var cts = new CancellationTokenSource();
@@ -23,15 +22,38 @@ namespace SFR.TemplateRandomizer.Tester
 
         private static Task PrintResultAsync(CancellationToken cancellationToken)
         {
-            var path = Path.Combine(Directory.GetCurrentDirectory(), "template.dev.json");
+            var path = Path.Combine(Directory.GetCurrentDirectory(), "template.dev.jsonc");
             string json = File.ReadAllText(path);
-            var gen = new TemplateRandomizer(JObject.Parse(json));
+            var gen = new TemplateRandomizer(JObject.Parse(json), new RandomizerSettings
+            {
+                Integer =
+                {
+                    Min = 0,
+                    Max = 1000 
+                },
+                Double =
+                {
+                    Min = -50,
+                    Max = +50,
+                    MaxDecimalDigits = new Range(2, 4) 
+                },
+                String =
+                {
+                    Casing = StringCase.Uppercase,
+                    IncludeDigits = true
+                },
+                Date =
+                {
+                    Min = DateTimeOffset.UnixEpoch,
+                    Max = DateTimeOffset.Parse("2020/12/31"),
+                    Format = "u",
+                }
+            });
 
             while (!cancellationToken.IsCancellationRequested)
             {
                 Console.Clear();
                 var generated = gen.Randomize();
-                //var generated = gen.ReplaceAuxiliarySections(gen.Template);
                 Console.WriteLine(generated["main"]);
                 Console.ReadLine();
             }

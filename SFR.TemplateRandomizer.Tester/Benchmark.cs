@@ -6,13 +6,12 @@ namespace SFR.TemplateRandomizer.Tester
     [MemoryDiagnoser]
     public class Benchmark
     {
-        private readonly JObject jobj;
         private readonly TemplateRandomizer gen;
 
         public Benchmark()
         {
             var template = File.ReadAllText(Path.Combine(Directory.GetCurrentDirectory(), "template.dev.json"));
-            jobj = JObject.Parse(template);
+            var jobj = JObject.Parse(template);
             gen = new TemplateRandomizer(jobj);
         }
 

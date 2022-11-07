@@ -15,16 +15,16 @@ namespace SFR.TemplateRandomizer
         private readonly IDictionary<string, ITypeGenerator> typeGenerators = new Dictionary<string, ITypeGenerator>();
         private readonly ITypeGeneratorFactory typeGeneratorFactory;
 
-        public TemplateRandomizer(JObject template)
+        public TemplateRandomizer(JObject template, RandomizerSettings settings = null)
         {
             this.template = template ?? throw new ArgumentNullException(nameof(template));
             typeGeneratorFactory = new TypeGeneratorFactory(this.random);
         }
 
         public JObject Randomize()
-            => RandomizeProperties(RepeatValues(RepeatProperties(template)));
+            => RandomizeProperties(RepeatProperties(AddRepeatedProperties(template)));
 
-        private JObject RepeatProperties(JObject jobject)
+        private JObject AddRepeatedProperties(JObject jobject)
         {
             var result = new JObject();
 
@@ -56,7 +56,7 @@ namespace SFR.TemplateRandomizer
 
                 if (prop.Value.Type == JTokenType.Object)
                 {
-                    current.Value = RepeatProperties((JObject)prop.Value);
+                    current.Value = AddRepeatedProperties((JObject)prop.Value);
                 }
 
                 result.Add(current);
@@ -65,7 +65,7 @@ namespace SFR.TemplateRandomizer
             return result;
         }
 
-        private JObject RepeatValues(JObject jobject)
+        private JObject RepeatProperties(JObject jobject)
         {
             var result = new JObject();
 
@@ -76,7 +76,7 @@ namespace SFR.TemplateRandomizer
                 switch (property.Value.Type)
                 {
                     case JTokenType.Object:
-                        current.Value = RepeatValues((JObject)property.Value);
+                        current.Value = RepeatProperties((JObject)property.Value);
                         break;
 
                     case JTokenType.Array:
@@ -85,7 +85,7 @@ namespace SFR.TemplateRandomizer
                         {
                             if (arrItem.Type == JTokenType.Object)
                             {
-                                arr.Add(RepeatValues((JObject)arrItem));
+                                arr.Add(RepeatProperties((JObject)arrItem));
                                 continue;
                             }
                             
@@ -163,7 +163,7 @@ namespace SFR.TemplateRandomizer
         {
             var tokenValue = token.ToString();
             if (tokenValue.StartsWith(Tokens.ReferenceSymbol))
-                return RandomizeProperties(RepeatValues(this.template.GetValue(tokenValue) as JObject), seqCounter);
+                return RandomizeProperties(RepeatProperties(this.template.GetValue(tokenValue) as JObject), seqCounter);
 
             if (!tokenValue.StartsWith(Tokens.TokenSymbol))
                 return token;
