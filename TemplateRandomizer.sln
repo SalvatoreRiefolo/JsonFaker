@@ -3,13 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.32112.339
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFR.TemplateRandomizer", "SFR.TemplateRandomizer\SFR.TemplateRandomizer.csproj", "{DD6FEA3C-153B-41C2-890D-799D9F881AFC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TemplateRandomizer", "TemplateRandomizer\TemplateRandomizer.csproj", "{DD6FEA3C-153B-41C2-890D-799D9F881AFC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFR.TemplateRandomizer.TypeGenerators", "SFR.TemplateRandomizer.TypeGenerators\SFR.TemplateRandomizer.TypeGenerators.csproj", "{31FCBFBD-79F1-43B5-A371-78F11E0C774D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TemplateRandomizer.TypeGenerators", "TemplateRandomizer.TypeGenerators\TemplateRandomizer.TypeGenerators.csproj", "{31FCBFBD-79F1-43B5-A371-78F11E0C774D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFR.TemplateRandomizer.Parsers", "SFR.TemplateRandomizer.Parsers\SFR.TemplateRandomizer.Parsers.csproj", "{77BE917E-A7B7-45A0-9788-F9C96209AA63}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TemplateRandomizer.Parsers", "TemplateRandomizer.Parsers\TemplateRandomizer.Parsers.csproj", "{77BE917E-A7B7-45A0-9788-F9C96209AA63}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFR.TemplateRandomizer.Tester", "SFR.TemplateRandomizer.Tester\SFR.TemplateRandomizer.Tester.csproj", "{8DD64CD8-5CFE-406E-8096-DACFE4013077}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TemplateRandomizer.Tester", "TemplateRandomizer.Tester\TemplateRandomizer.Tester.csproj", "{8DD64CD8-5CFE-406E-8096-DACFE4013077}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

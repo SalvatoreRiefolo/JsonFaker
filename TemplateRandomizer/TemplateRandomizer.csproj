@@ -3,6 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>SFR.TemplateRandomizer</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
@@ -12,8 +13,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SFR.TemplateRandomizer.Parsers\SFR.TemplateRandomizer.Parsers.csproj" />
-    <ProjectReference Include="..\SFR.TemplateRandomizer.TypeGenerators\SFR.TemplateRandomizer.TypeGenerators.csproj" />
+    <ProjectReference Include="..\TemplateRandomizer.Parsers\TemplateRandomizer.Parsers.csproj" />
+    <ProjectReference Include="..\TemplateRandomizer.TypeGenerators\TemplateRandomizer.TypeGenerators.csproj" />
   </ItemGroup>
 
   <ProjectExtensions><VisualStudio><UserProperties /></VisualStudio></ProjectExtensions>

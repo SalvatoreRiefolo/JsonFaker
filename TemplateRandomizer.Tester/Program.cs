@@ -24,7 +24,7 @@ namespace SFR.TemplateRandomizer.Tester
         {
             var path = Path.Combine(Directory.GetCurrentDirectory(), "template.dev.jsonc");
             string json = File.ReadAllText(path);
-            var gen = new TemplateRandomizer(JObject.Parse(json), new RandomizerSettings
+            var gen = new TemplateRandomizer(JObject.Parse(json), new RandomizerConfiguration
             {
                 Integer =
                 {

@@ -15,7 +15,7 @@ namespace SFR.TemplateRandomizer
         private readonly IDictionary<string, ITypeGenerator> typeGenerators = new Dictionary<string, ITypeGenerator>();
         private readonly ITypeGeneratorFactory typeGeneratorFactory;
 
-        public TemplateRandomizer(JObject template, RandomizerSettings settings = null)
+        public TemplateRandomizer(JObject template, RandomizerConfiguration configuration = null)
         {
             this.template = template ?? throw new ArgumentNullException(nameof(template));
             typeGeneratorFactory = new TypeGeneratorFactory(this.random);
