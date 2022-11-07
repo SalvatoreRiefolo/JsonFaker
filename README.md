@@ -11,15 +11,15 @@ The .json file used as a template is composed as follows:
 ```json
 {
   "main": {
-    ...json that is randomized and returned as a result...
+    "...json that is randomized and returned as a result...": "..."
   },
 
     
   "&auxiliary_1": {
-    ...
+    "...": "..."
   },
   "&auxiliary_2": {
-    ...
+    "...": "..."
   }
 }
 ```
@@ -81,9 +81,9 @@ The following template produces the json below:
     },
 	
     "&address": {
-        "street": ... // can be randomized as well
-        "civic": ...		
-        "ZIP CODE": ...		
+        "street": "...",
+        "civic": "...",	
+        "ZIP CODE": "..."	
     }
 }
 ```
@@ -94,14 +94,14 @@ The following template produces the json below:
     "surname": "blondes",
     "residences": [
         {
-            "street": ...		
-            "house_number": ...	
-            "zip": ...
+            "street": "...",		
+            "house_number": "...",	
+            "zip": "..."
         },
         {
-            "street": ...		
-            "house_number": ...	
-            "zip": ...
+            "street": "...",		
+            "house_number": "...",	
+            "zip": "..."
         }		
     ]
 }
