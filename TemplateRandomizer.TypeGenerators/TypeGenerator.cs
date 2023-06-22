@@ -1,13 +1,15 @@
 ﻿using SFR.TemplateRandomizer.TypeGenerators.Abstractions;
 
-namespace SFR.TemplateRandomizer.TypeGenerators
+namespace SFR.TemplateRandomizer.TypeGenerators;
+
+internal abstract class TypeRandomGenerator : ITypeGenerator
 {
-    internal abstract class TypeGenerator : ITypeGenerator
+    protected readonly Random Random;
+
+    protected TypeRandomGenerator(Random random)
     {
-        protected readonly Random Random;
-
-        protected TypeGenerator(Random random) => this.Random = random;
-
-        public abstract object Execute();
+        Random = random;
     }
+
+    public abstract object Execute();
 }

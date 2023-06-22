@@ -1,30 +1,28 @@
-﻿using SFR.TemplateGenerator.Parsers;
-using SFR.TemplateRandomizer.TypeGenerators.Models;
+﻿using SFR.TemplateGenerator.Models;
+using SFR.TemplateGenerator.Parsers;
 
-namespace SFR.TemplateRandomizer.TypeGenerators
+namespace SFR.TemplateRandomizer.TypeGenerators;
+
+internal class DateGenerator : TypeRandomGenerator
 {
-    internal class DateGenerator : TypeGenerator
+    private readonly DateTimeOffset min;
+    private readonly DateTimeOffset max;
+
+    private readonly IArgumentParser<(DateTimeOffset, DateTimeOffset)> argumentParser = new DateRangeParser();
+    private readonly string formatting;
+
+    public DateGenerator(Random random, RangeSegment range, string formatting = "yyyy-MM-ddThh:mm:ssZ")
+        : base(random)
     {
-        private readonly DateTimeOffset min;
-        private readonly DateTimeOffset max;
+        (min, max) = argumentParser.Parse(range);
+        this.formatting = formatting;
+    }
 
-        private readonly IArgumentParser<(DateTimeOffset, DateTimeOffset)> argumentParser = new DateRangeParser();
-        private readonly string formatting;
+    public override object Execute()
+    {
+        var range = max - min;
+        var randTimeSpan = new TimeSpan((long)(Random.NextDouble() * range.Ticks));
 
-        public DateGenerator(Random random, IGeneratorArgument args, string formatting = "yyyy-MM-ddThh:mm:ssZ")
-            : base(random)
-        {
-            (min, max) = this.argumentParser.Parse(args.Value);
-            this.formatting = formatting;
-        }
-
-        public override object Execute()
-        {
-            var range = this.max - this.min;
-
-            var randTimeSpan = new TimeSpan((long)(base.Random.NextDouble() * range.Ticks));
-
-            return (this.min + randTimeSpan).ToString(formatting);
-        }
+        return (min + randTimeSpan).ToString(formatting);
     }
 }

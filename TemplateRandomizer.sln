@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TemplateRandomizer.Parsers"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TemplateRandomizer.Tester", "TemplateRandomizer.Tester\TemplateRandomizer.Tester.csproj", "{8DD64CD8-5CFE-406E-8096-DACFE4013077}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TemplateRandomizer.Models", "TemplateRandomizer.Models\TemplateRandomizer.Models.csproj", "{C355BE82-E2E6-4B65-AC50-71F22D6351EC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{8DD64CD8-5CFE-406E-8096-DACFE4013077}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8DD64CD8-5CFE-406E-8096-DACFE4013077}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8DD64CD8-5CFE-406E-8096-DACFE4013077}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C355BE82-E2E6-4B65-AC50-71F22D6351EC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C355BE82-E2E6-4B65-AC50-71F22D6351EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C355BE82-E2E6-4B65-AC50-71F22D6351EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C355BE82-E2E6-4B65-AC50-71F22D6351EC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

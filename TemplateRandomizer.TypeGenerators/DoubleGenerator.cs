@@ -1,21 +1,25 @@
-﻿using SFR.TemplateGenerator.Parsers;
-using SFR.TemplateRandomizer.TypeGenerators.Models;
+﻿using SFR.TemplateGenerator.Models;
+using SFR.TemplateGenerator.Parsers;
 
-namespace SFR.TemplateRandomizer.TypeGenerators
+namespace SFR.TemplateRandomizer.TypeGenerators;
+
+internal class DoubleGenerator : TypeRandomGenerator
 {
-    internal class DoubleGenerator : TypeGenerator
+    private readonly double min;
+    private readonly double max;
+
+    private readonly IArgumentParser<(double, double)> argumentParser = new DoubleRangeParser();
+
+    public DoubleGenerator(Random random, RangeSegment range)
+        : base(random)
     {
-        private readonly double min;
-        private readonly double max;
+        System.Console.WriteLine($"Double range {range}");
+        (min, max) = argumentParser.Parse(range);
+        System.Console.WriteLine($"Double min {min} max {max}");
+    }
 
-        private readonly IArgumentParser<(double, double)> argumentParser = new DoubleRangeParser();
-
-        public DoubleGenerator(Random random, IGeneratorArgument args)
-            : base(random)
-        {
-            (min, max) = this.argumentParser.Parse(args.Value);
-        }
-
-        public override object Execute() => base.Random.NextDouble() * (this.max - this.min) + this.min;
+    public override object Execute()
+    {
+        return Random.NextDouble() * (max - min) + min;
     }
 }

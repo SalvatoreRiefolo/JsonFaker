@@ -1,7 +1,8 @@
-﻿namespace SFR.TemplateGenerator.Parsers
+﻿using SFR.TemplateGenerator.Models;
+
+namespace SFR.TemplateGenerator.Parsers;
+
+public interface IArgumentParser<out T>
 {
-    public interface IArgumentParser<out T>
-    {
-        T Parse(string input);
-    }
+    T Parse(RangeSegment input);
 }

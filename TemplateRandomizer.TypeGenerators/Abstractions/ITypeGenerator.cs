@@ -1,7 +1,6 @@
-﻿namespace SFR.TemplateRandomizer.TypeGenerators.Abstractions
+﻿namespace SFR.TemplateRandomizer.TypeGenerators.Abstractions;
+
+public interface ITypeGenerator
 {
-    public interface ITypeGenerator
-    {
-        public object Execute();
-    }
+    public object Execute();
 }

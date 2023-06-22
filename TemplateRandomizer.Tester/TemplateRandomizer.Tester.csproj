@@ -2,24 +2,24 @@
 
     <PropertyGroup>
         <OutputType>Exe</OutputType>
-        <TargetFramework>net6.0</TargetFramework>
+        <TargetFramework>net7.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <RootNamespace>SFR.TemplateRandomizer.Tester</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>
-      <None Update="template.dev.jsonc">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </None>
+        <None Update="template.dev.jsonc">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="BenchmarkDotNet" Version="0.13.2" />
-      <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+        <PackageReference Include="BenchmarkDotNet" Version="0.13.2"/>
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.1"/>
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\TemplateRandomizer\TemplateRandomizer.csproj" />
+        <ProjectReference Include="..\TemplateRandomizer\TemplateRandomizer.csproj"/>
     </ItemGroup>
 
 </Project>
