@@ -396,4 +396,4 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
-/TemplateRandomizer/template.json
+/JsonFaker/template.json
