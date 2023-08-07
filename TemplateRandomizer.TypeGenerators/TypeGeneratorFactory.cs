@@ -1,8 +1,8 @@
-using SFR.TemplateGenerator.Models;
-using SFR.TemplateRandomizer.TypeGenerators.Abstractions;
-using SFR.TemplateRandomizer.TypeGenerators.Constants;
+using TemplateGenerator.Models;
+using TemplateRandomizer.TypeGenerators.Abstractions;
+using TemplateRandomizer.TypeGenerators.Constants;
 
-namespace SFR.TemplateRandomizer.TypeGenerators;
+namespace TemplateRandomizer.TypeGenerators;
 
 public class TypeGeneratorFactory : ITypeGeneratorFactory
 {

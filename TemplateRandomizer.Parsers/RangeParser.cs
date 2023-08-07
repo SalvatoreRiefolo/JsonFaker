@@ -1,6 +1,6 @@
-using SFR.TemplateGenerator.Models;
+using TemplateGenerator.Models;
 
-namespace SFR.TemplateGenerator.Parsers;
+namespace TemplateGenerator.Parsers;
 
 public abstract class RangeParser<T> : IArgumentParser<(T, T)>
     where T : IComparable

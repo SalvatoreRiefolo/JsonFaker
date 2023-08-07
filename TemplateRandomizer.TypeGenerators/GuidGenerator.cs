@@ -1,6 +1,6 @@
-﻿using SFR.TemplateRandomizer.TypeGenerators.Abstractions;
+﻿using TemplateRandomizer.TypeGenerators.Abstractions;
 
-namespace SFR.TemplateRandomizer.TypeGenerators;
+namespace TemplateRandomizer.TypeGenerators;
 
 internal class GuidGenerator : ITypeGenerator
 {

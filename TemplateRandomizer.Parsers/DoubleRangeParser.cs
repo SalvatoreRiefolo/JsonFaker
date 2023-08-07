@@ -1,6 +1,6 @@
 ﻿using System.Globalization;
 
-namespace SFR.TemplateGenerator.Parsers;
+namespace TemplateGenerator.Parsers;
 
 public class DoubleRangeParser : RangeParser<double>
 {

@@ -1,4 +1,4 @@
-namespace SFR.TemplateRandomizer;
+namespace TemplateRandomizer;
 
 internal static class Extensions
 {

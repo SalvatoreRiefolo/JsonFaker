@@ -1,4 +1,4 @@
-﻿namespace SFR.TemplateRandomizer.TypeGenerators.Constants;
+﻿namespace TemplateRandomizer.TypeGenerators.Constants;
 
 public static class Tokens
 {

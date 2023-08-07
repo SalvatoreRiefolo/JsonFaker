@@ -1,7 +1,7 @@
 ﻿using BenchmarkDotNet.Running;
 using Newtonsoft.Json.Linq;
 
-namespace SFR.TemplateRandomizer.Tester;
+namespace TemplateRandomizer.Tester;
 
 // TODO increment, decrement and step for $seq keyword
 // TODO datetime requires full date, possibility to use only part of date (year, year+month)

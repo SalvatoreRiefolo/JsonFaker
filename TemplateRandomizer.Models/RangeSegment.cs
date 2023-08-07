@@ -1,6 +1,6 @@
 using System.Diagnostics;
 
-namespace SFR.TemplateGenerator.Models;
+namespace TemplateGenerator.Models;
 
 public record RangeSegment(string? LowerBound, string? UpperBound)
 {
@@ -8,7 +8,6 @@ public record RangeSegment(string? LowerBound, string? UpperBound)
 
     public static RangeSegment CreateFromToken(string rangeToken)
     {
-
         var boundaryTokens = rangeToken.Split(Delimiter);
 
         return boundaryTokens switch

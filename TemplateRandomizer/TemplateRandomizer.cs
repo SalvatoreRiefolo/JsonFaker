@@ -1,11 +1,11 @@
 ﻿using Newtonsoft.Json.Linq;
-using SFR.TemplateGenerator.Models;
-using SFR.TemplateGenerator.Parsers;
-using SFR.TemplateRandomizer.TypeGenerators;
-using SFR.TemplateRandomizer.TypeGenerators.Abstractions;
-using SFR.TemplateRandomizer.TypeGenerators.Constants;
+using TemplateGenerator.Models;
+using TemplateGenerator.Parsers;
+using TemplateRandomizer.TypeGenerators;
+using TemplateRandomizer.TypeGenerators.Abstractions;
+using TemplateRandomizer.TypeGenerators.Constants;
 
-namespace SFR.TemplateRandomizer;
+namespace TemplateRandomizer;
 
 public class TemplateRandomizer
 {
@@ -182,6 +182,4 @@ public class TemplateRandomizer
 
         return new JValue(generator.Execute());
     }
-
-
 }

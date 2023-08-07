@@ -1,6 +1,6 @@
-﻿using SFR.TemplateGenerator.Models;
+﻿using TemplateGenerator.Models;
 
-namespace SFR.TemplateGenerator.Parsers;
+namespace TemplateGenerator.Parsers;
 
 public interface IArgumentParser<out T>
 {

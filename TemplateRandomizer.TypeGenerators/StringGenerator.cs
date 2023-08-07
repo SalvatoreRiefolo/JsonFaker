@@ -1,7 +1,7 @@
-﻿using SFR.TemplateGenerator.Models;
-using SFR.TemplateGenerator.Parsers;
+﻿using TemplateGenerator.Models;
+using TemplateGenerator.Parsers;
 
-namespace SFR.TemplateRandomizer.TypeGenerators;
+namespace TemplateRandomizer.TypeGenerators;
 
 internal class StringGenerator : TypeRandomGenerator
 {

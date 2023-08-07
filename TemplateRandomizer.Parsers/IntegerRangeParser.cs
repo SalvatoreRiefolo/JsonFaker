@@ -1,4 +1,4 @@
-﻿namespace SFR.TemplateGenerator.Parsers;
+﻿namespace TemplateGenerator.Parsers;
 
 public class IntegerRangeParser : RangeParser<int>
 {

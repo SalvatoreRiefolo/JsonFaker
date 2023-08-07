@@ -396,4 +396,4 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
-/SFR.TemplateRandomizer/template.json
+/TemplateRandomizer/template.json

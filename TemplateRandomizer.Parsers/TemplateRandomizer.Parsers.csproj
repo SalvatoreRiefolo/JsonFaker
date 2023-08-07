@@ -6,6 +6,6 @@
     <TargetFramework>net7.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <RootNamespace>SFR.TemplateGenerator.Parsers</RootNamespace>
+    <RootNamespace>TemplateGenerator.Parsers</RootNamespace>
   </PropertyGroup>
 </Project>

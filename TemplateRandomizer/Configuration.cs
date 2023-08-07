@@ -1,4 +1,4 @@
-namespace SFR.TemplateRandomizer;
+namespace TemplateRandomizer;
 
 public class Configuration
 {

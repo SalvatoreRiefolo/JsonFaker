@@ -1,7 +1,7 @@
 ﻿using BenchmarkDotNet.Attributes;
 using Newtonsoft.Json.Linq;
 
-namespace SFR.TemplateRandomizer.Tester;
+namespace TemplateRandomizer.Tester;
 
 [MemoryDiagnoser]
 public class Benchmark
