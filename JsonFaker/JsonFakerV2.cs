@@ -1,71 +1,51 @@
-﻿using Newtonsoft.Json.Linq;
+using Newtonsoft.Json.Linq;
 using JsonFaker.Models;
 using JsonFaker.Parsers;
 using JsonFaker.TypeGenerators;
 using JsonFaker.TypeGenerators.Abstractions;
 using JsonFaker.TypeGenerators.Constants;
+using System.Numerics;
+
 
 namespace JsonFaker;
 
-public class JsonFaker
+
+public class JsonFakerV2
 {
     private readonly JObject template;
-
-    private readonly Random random = new(12); //new(Environment.TickCount);
+    
+    private readonly Random random = new(Environment.TickCount);
     private readonly IArgumentParser<(int, int)> rangeParser = new IntegerRangeParser();
-    private readonly IDictionary<string, ITypeGenerator> generatorsCache = new Dictionary<string, ITypeGenerator>();
+    private readonly IDictionary<string, ITypeGenerator> generatorCache = new Dictionary<string, ITypeGenerator>();
     private readonly ITypeGeneratorFactory typeGeneratorFactory;
 
-    public JsonFaker(JObject template)
+
+    private JsonFakerV2(JObject template)
     {
-        this.template = template ?? throw new ArgumentNullException(nameof(template));
+        this.template = template;
         typeGeneratorFactory = new TypeGeneratorFactory(random);
     }
+
+    public static JsonFakerV2 CreateFor(JObject template)
+        => new(template ?? throw new ArgumentNullException(nameof(template)));
+
+    public static JsonFakerV2 CreateFor(string template)
+        => CreateFor(JObject.Parse(template));
 
     public JObject Randomize()
         => RandomizePropertyValues(RepeatPropertyValues(RepeatPropertyNames(template)));
 
-    public JObject Randomize(int f)
-    {
-        var addRepeat = RepeatPropertyNames(template);
-        // Console.WriteLine("Add Repeated");
-        // Console.WriteLine(addRepeat.ToString());
-
-        // Console.WriteLine();
-
-        var repeat = RepeatPropertyValues(addRepeat);
-        // Console.WriteLine("Repeat");
-        // Console.WriteLine(repeat.ToString());
-
-        // Console.WriteLine();
-
-        return RandomizePropertyValues(repeat);
-    }
-
-    private JObject RepeatPropertyNames(JObject jobject)
+    private JObject RepeatPropertyNames(JObject input)
     {
         var result = new JObject();
 
-        foreach (var prop in jobject.Properties())
+        foreach (var prop in input.Properties())
         {
-            var current = new JProperty(prop.Name);
-
-            // create + shuffle, pop
-            // check if upper bound > repeat if property name is a token
-            if (current.Name.Contains(Tokens.Repeat))
+            if (prop.Name.Contains(Tokens.Repeat))
             {
-                var (typeToken, repeatRange) = current.Name.SplitOnToken(Tokens.Repeat);
-                var (low, high) = rangeParser.Parse(RangeSegment.CreateFromToken(repeatRange));
-
-                // var repeatCount = random.Next(low, high);
-                // var uniqueRandoms = new JToken[repeatCount];
-
-                // while (uniqueRandoms.Length < repeatCount)
-                // {
-                //     var generatedValue = GenerateValue(typeToken);
-                //     if (uniqueRandoms.Contains(generatedValue))                    
-                //         uniqueRandoms[repeatCount] = generatedValue;                    
-                // }
+                var (typeToken, repeatRange) = prop.Name.SplitOnToken(Tokens.Repeat);
+                var range = RangeSegment.CreateFromToken(repeatRange);
+                var (low, high) = rangeParser.Parse(range);
 
                 for (var i = 0; i < random.Next(low, high); i++)
                 {
@@ -82,6 +62,7 @@ public class JsonFaker
                 continue;
             }
 
+            var current = new JProperty(prop.Name);
             current.Value = prop.Value;
 
             if (prop.Value.Type == JTokenType.Object)
@@ -93,27 +74,27 @@ public class JsonFaker
         return result;
     }
 
-    private JObject RepeatPropertyValues(JObject jobject)
+    private JObject RepeatPropertyValues(JObject input)
     {
-        // var repeated = jobject.Properties()
-        //     .Select(p => 
-        //     {
-        //         return new JProperty(p.Name)
-        //         {
-        //             Value = p.Value.Type switch
-        //             {
-        //                 JTokenType.Object => RepeatPropertyValues((JObject)p.Value),
-        //                 JTokenType.Array => RepeatArrayValues((JArray)p.Value),
-        //                 _ => p.Value
-        //             }
-        //         };
-        //     });
+        //var repeated = input.Properties()
+        //    .Select(p =>
+        //    {
+        //        return new JProperty(p.Name)
+        //        {
+        //            Value = p.Value.Type switch
+        //            {
+        //                JTokenType.Object => RepeatPropertyValues((JObject)p.Value),
+        //                JTokenType.Array => RepeatArrayValues((JArray)p.Value),
+        //                _ => p.Value
+        //            }
+        //        };
+        //    });
 
-        // return new JObject(repeated);
+        //return new JObject(repeated);
 
         var result = new JObject();
 
-        foreach (var property in jobject.Properties())
+        foreach (var property in input.Properties())
         {
             var current = new JProperty(property.Name)
             {
@@ -159,11 +140,11 @@ public class JsonFaker
         return arr;
     }
 
-    private JObject RandomizePropertyValues(JObject jobject, int sequenceCounter = 0)
+    private JObject RandomizePropertyValues(JObject input, int sequenceCounter = 0)
     {
         var result = new JObject();
 
-        foreach (var property in jobject.Properties())
+        foreach (var property in input.Properties())
         {
             var current = new JProperty(property.Name)
             {
@@ -181,13 +162,13 @@ public class JsonFaker
         return result;
     }
 
-    private JArray RandomizeArrayValues(JArray currentArr)
+    private JArray RandomizeArrayValues(JArray array)
     {
         var newArr = new JArray();
 
-        for (var i = 0; i < currentArr.Count; i++)
+        for (var i = 0; i < array.Count; i++)
         {
-            var item = currentArr[i];
+            var item = array[i];
             newArr.Add(item.Type == JTokenType.Object
                 ? RandomizePropertyValues((JObject)item, i)
                 : GenerateValue(item, i));
@@ -208,7 +189,7 @@ public class JsonFaker
 
         if (!tokenValue.StartsWith(Tokens.TokenIdentifier)) return token;
 
-        var generator = generatorsCache.GetOrCreate(tokenValue,
+        var generator = generatorCache.GetOrCreate(tokenValue,
             () => typeGeneratorFactory.CreateTypeGenerator(tokenValue));
 
         return new JValue(generator.Execute());

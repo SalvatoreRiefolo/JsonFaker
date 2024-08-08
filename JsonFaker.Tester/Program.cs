@@ -1,4 +1,5 @@
 ﻿using BenchmarkDotNet.Running;
+using JsonFaker.Models;
 using Newtonsoft.Json.Linq;
 
 namespace JsonFaker.Tester;
@@ -28,41 +29,46 @@ public static class Program
     {
         var path = Path.Combine(Directory.GetCurrentDirectory(), "template.dev.jsonc");
         var json = File.ReadAllText(path);
-        var gen = new JsonFaker(JObject.Parse(json)
-        //, new Configuration
-        // {
-        //     Integer =
-        //     {
-        //         Min = 0,
-        //         Max = 1000 
-        //     },
-        //     Double =
-        //     {
-        //         Min = -50,
-        //         Max = +50,
-        //         MaxDecimalDigits = new Range(2, 4) 
-        //     },
-        //     String =
-        //     {
-        //         Casing = StringCase.Uppercase,
-        //         IncludeDigits = true
-        //     },
-        //     Date =
-        //     {
-        //         Min = DateTimeOffset.UnixEpoch,
-        //         Max = DateTimeOffset.Parse("2020/12/31"),
-        //         Format = "u",
-        //     }
-        // }
-        );
+        // var gen = new JsonFaker(JObject.Parse(json)
+        // //, new Configuration
+        // // {
+        // //     Integer =
+        // //     {
+        // //         Min = 0,
+        // //         Max = 1000 
+        // //     },
+        // //     Double =
+        // //     {
+        // //         Min = -50,
+        // //         Max = +50,
+        // //         MaxDecimalDigits = new Range(2, 4) 
+        // //     },
+        // //     String =
+        // //     {
+        // //         Casing = StringCase.Uppercase,
+        // //         IncludeDigits = true
+        // //     },
+        // //     Date =
+        // //     {
+        // //         Min = DateTimeOffset.UnixEpoch,
+        // //         Max = DateTimeOffset.Parse("2020/12/31"),
+        // //         Format = "u",
+        // //     }
+        // // }
+        // );
 
-        while (!cancellationToken.IsCancellationRequested)
-        {
-            Console.Clear();
-            var generated = gen.Randomize(1);
-            Console.WriteLine(generated["main"]);
-            Console.ReadLine();
-        }
+        // while (!cancellationToken.IsCancellationRequested)
+        // {
+        //     Console.Clear();
+        //     var generated = gen.Randomize(1);
+
+        //     Console.ReadLine();
+        // }
+
+        var gen = JsonFakerV2.CreateFor(json);
+
+        var generated = gen.Randomize();
+        Console.WriteLine(generated["main"]);
 
         return Task.CompletedTask;
     }

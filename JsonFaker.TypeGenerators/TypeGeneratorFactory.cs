@@ -21,8 +21,10 @@ public class TypeGeneratorFactory : ITypeGeneratorFactory
 
         try
         {
-            System.Console.WriteLine($"Range: {string.Join(',', tokens)}");
             var range = RangeSegment.CreateFromToken(tokens.Length > 1 ? tokens[1] : string.Empty);
+            
+            Console.WriteLine($"Range for {tokens[0]}: {range}");
+
             return tokens[0] switch
             {
                 Tokens.Integer => new IntegerGenerator(random, range),
@@ -35,9 +37,8 @@ public class TypeGeneratorFactory : ITypeGeneratorFactory
         }
         catch (Exception e)
         {
-            System.Console.WriteLine($"Range: {tokens}, Message: {e}");
-            throw e;
+            Console.WriteLine($"Range: {tokens}, Message: {e}");
+            throw;
         }
-
     }
 }

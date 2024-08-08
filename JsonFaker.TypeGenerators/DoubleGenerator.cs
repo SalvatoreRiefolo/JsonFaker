@@ -3,7 +3,7 @@ using JsonFaker.Parsers;
 
 namespace JsonFaker.TypeGenerators;
 
-internal class DoubleGenerator : TypeRandomGenerator
+internal class DoubleGenerator : TypeGenerator
 {
     private readonly double min;
     private readonly double max;
@@ -13,9 +13,7 @@ internal class DoubleGenerator : TypeRandomGenerator
     public DoubleGenerator(Random random, RangeSegment range)
         : base(random)
     {
-        System.Console.WriteLine($"Double range {range}");
         (min, max) = argumentParser.Parse(range);
-        System.Console.WriteLine($"Double min {min} max {max}");
     }
 
     public override object Execute()

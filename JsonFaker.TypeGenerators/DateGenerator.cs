@@ -3,7 +3,7 @@ using JsonFaker.Parsers;
 
 namespace JsonFaker.TypeGenerators;
 
-internal class DateGenerator : TypeRandomGenerator
+internal class DateGenerator : TypeGenerator
 {
     private readonly DateTimeOffset min;
     private readonly DateTimeOffset max;

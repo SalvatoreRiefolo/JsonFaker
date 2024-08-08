@@ -1,13 +1,13 @@
 {
   "main": {
-    "$int 0..100 $repeat 3": [
-      "&person $repeat 5"
+    "$int 0..100 -repeat 3": [
+      "&person -repeat 5"
     ]
   },
 
   "&person": {
     "SEQ_NUM": "$seq", // start 10 step 2 inc
-    "name": "$string ..50",
+    "name": "$string ..10",
     "seconds_alive": "$double 0..50",
     "id": "$guid"
   }

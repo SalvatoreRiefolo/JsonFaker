@@ -3,7 +3,7 @@ using JsonFaker.Parsers;
 
 namespace JsonFaker.TypeGenerators;
 
-internal class IntegerGenerator : TypeRandomGenerator
+internal class IntegerGenerator : TypeGenerator
 {
     private readonly int min;
     private readonly int max;
